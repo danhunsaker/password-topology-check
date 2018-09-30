@@ -1,0 +1,33 @@
+{
+    "name": "danhunsaker/password-topology-check",
+    "description": "Checks a given password's topology against the top 100 enterprise password topologies, as researched by KoreLogic",
+    "keywords": [
+        "password",
+        "password topology"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nathanael Padgett",
+            "homepage": "https://www.417solutions.com",
+            "role": "Creator"
+        },
+        {
+            "name": "Daniel Hunsaker",
+            "email": "danhunsaker@gmail.com",
+            "role": "Conversion to class / Composer"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "DanHunsaker\\PasswordTopology\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DanHunsaker\\PasswordTopology\\Tests\\": "tests"
+        }
+    }
+}
