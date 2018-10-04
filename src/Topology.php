@@ -10,6 +10,8 @@ namespace DanHunsaker\PasswordTopology;
  */
 class Topology
 {
+    protected static $unicode = true;
+
     /**
      * @var array The list of forbidden topologies
      *
@@ -54,15 +56,21 @@ class Topology
     {
         $pattern = "";
 
-        for ($i = 0; $i < strlen($password); $i++) {
-            if (preg_match('/[^0-9a-zA-Z]/', $password[$i])) {
+        for ($i = 0; $i < (static::$unicode ? mb_strlen($password) : strlen($password)); $i++) {
+            $char = static::$unicode ? mb_substr($password, $i, 1) : $password[$i];
+
+            if (preg_match(static::$unicode ? '/[^\p{N}\p{L}]/u' : '/[^0-9a-zA-Z]/', $char)) {
+                // Not a number or letter
                 $pattern .= 's';
-            } elseif (preg_match('/[0-9]/', $password[$i])) {
+            } elseif (preg_match(static::$unicode ? '/[\p{N}]/u' : '/[0-9]/', $char)) {
+                // Any numeric character
                 $pattern .= 'd';
-            } elseif (preg_match('/[a-z]/', $password[$i])) {
-                $pattern .= 'l';
-            } elseif (preg_match('/[A-Z]/', $password[$i])) {
+            } elseif (preg_match(static::$unicode ? '/[\p{Lu}\p{Lt}]/u' : '/[A-Z]/', $char)) {
+                // Any uppercase or mixed-case letter
                 $pattern .= 'u';
+            } elseif (preg_match(static::$unicode ? '/[^\P{L}\p{Lu}\p{Lt}]/u' : '/[a-z]/', $char)) {
+                // Any letter that isn't uppercase or mixed-case
+                $pattern .= 'l';
             }
         }
 
@@ -78,6 +86,15 @@ class Topology
     public static function check($password)
     {
         return !in_array(static::convert($password), static::$forbidden);
+    }
+
+    public static function unicode($enabled = null)
+    {
+        if (!empty($enabled)) {
+            static::$unicode = $enabled;
+        }
+
+        return static::$unicode;
     }
 
     /**
